@@ -48,8 +48,47 @@ void addRandomTile() {
     board[emptyCells[random][0]][emptyCells[random][1]] = rvalue;
 }
 
+void moveLeft() {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 1; j < SIZE; j++) //first column cannot move left 
+        {
+            if (board[i][j] == 0) continue;
+            int s = j;
+            while (s > 0 && board[i][s - 1] == 0) {
+                board[i][s - 1] = board[i][s];
+                board[i][s] = 0;
+                s--;
+            }
+            if (s > 0 && board[i][s - 1] == board[i][s]) {
+                board[i][s - 1] *= 2;
+                board[i][s] = 0;
+            }
+        }
+    }
+}
+
 int main()
 {
-    cout << "Hello 2048!" << endl;
+    srand((time(0)));
+    initBoard();
+    addRandomTile();
+   //printBoard();
+    while (true) {
+        printBoard();
+        char command;
+        cin >> command;
+        if (command == 'q' || command == 'Q') break;
+        if (command == 'n' || command == 'N') {
+            initBoard();
+            addRandomTile();
+            addRandomTile();
+            continue;
+        }
+        if (command == 'a' || command == 'A') {
+            moveLeft();
+            addRandomTile();
+        }
+    }
+
     return 0;
 }
