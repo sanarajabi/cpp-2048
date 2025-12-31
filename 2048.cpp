@@ -88,7 +88,7 @@ void moveRight() {
 
 int main()
 {
-    srand((time(0)));
+    srand(time(0));
     initBoard();
     addRandomTile();
    //printBoard();
@@ -96,21 +96,37 @@ int main()
         printBoard();
         char command;
         cin >> command;
+
+        int oldBoard[SIZE][SIZE]; //to check if the command is valid
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                oldBoard[i][j] = board[i][j];
+            }
+        }
+
         if (command == 'q' || command == 'Q') break;
         if (command == 'n' || command == 'N') {
             initBoard();
-            addRandomTile();
             addRandomTile();
             continue;
         }
         if (command == 'a' || command == 'A') {
             moveLeft();
-            addRandomTile();
         }
         if (command == 'd' || command == 'D') {
             moveRight();
-            addRandomTile();
         } 
+
+        bool validMovement = false;
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (oldBoard[i][j] != board[i][j]) {
+                    validMovement = true;
+                    break;
+                }
+            }
+        }
+        if (validMovement) addRandomTile();
     }
 
     return 0;
