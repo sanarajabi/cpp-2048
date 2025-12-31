@@ -67,6 +67,25 @@ void moveLeft() {
     }
 }
 
+void moveRight() {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = SIZE - 2; j>=0; j--) //last column cannot move right
+        {
+            if (board[i][j] == 0) continue;
+            int s = j;
+            while (s < SIZE - 1 && board[i][s + 1] == 0) {
+                board[i][s + 1] = board[i][s];
+                board[i][s] = 0;
+                s++;
+            }
+            if (s < SIZE - 1 && board[i][s + 1] == board[i][s]) {
+                board[i][s + 1] *= 2;
+                board[i][s] = 0;
+            }
+        }
+    }
+}
+
 int main()
 {
     srand((time(0)));
@@ -88,6 +107,10 @@ int main()
             moveLeft();
             addRandomTile();
         }
+        if (command == 'd' || command == 'D') {
+            moveRight();
+            addRandomTile();
+        } 
     }
 
     return 0;
