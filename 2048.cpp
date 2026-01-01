@@ -86,6 +86,45 @@ void moveRight() {
     }
 }
 
+void moveUp() {
+    for (int i = 0; i < SIZE; i++) // the first row cannot move upside
+    {
+        for (int j = 1; j < SIZE; j++) {
+            if (board[j][i] == 0) continue;
+            int s = j;
+            while (s > 0 && board[s - 1][i] == 0) {
+                board[s - 1][i] = board[s][i];
+                board[s][i] = 0;
+                s--;
+            }
+            if (s > 0 && board[s - 1][i] == board[s][i]) {
+                board[s - 1][i] *= 2;
+                board[s][i] = 0;
+            }
+        }
+    }
+}
+
+void moveDown() {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = SIZE - 2; j >= 0; j--) {
+            if (board[j][i] == 0) continue;
+            int s = j;
+            while (s < SIZE - 1 && board[s + 1][i] == 0) {
+                board[s + 1][i] = board[s][i];
+                board[s][i] = 0;
+                s++;
+            }
+            if (s < SIZE - 1 && board[s + 1][i] == board[s][i]) {
+                board[s + 1][i] *= 2;
+                board[s][i] = 0;
+            }
+
+
+        }
+    }
+}
+
 int main()
 {
     srand(time(0));
@@ -115,7 +154,13 @@ int main()
         }
         if (command == 'd' || command == 'D') {
             moveRight();
-        } 
+        }
+        if (command == 'w' || command == 'W') {
+            moveUp();
+        }
+        if (command == 's' || command == 'S') {
+            moveDown();
+        }
 
         bool validMovement = false;
         for (int i = 0; i < SIZE; i++) {
