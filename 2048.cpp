@@ -125,6 +125,49 @@ void moveDown() {
     }
 }
 
+bool checkWin() {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (board[i][j] == 2048) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
+
+bool canMove() {
+    // Check for empty cells
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            if (board[i][j] == 0) return true;
+        }
+    }
+    // Check for horizontally mergeable neighboring cells
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE - 1; j++) {
+            if (board[i][j] == board[i][j + 1]) return true;
+        }
+    }
+    // Check for vertically mergeable neighboring cells
+    for (int j = 0; j < SIZE; j++) {
+        for (int i = 0; i < SIZE - 1; i++) {
+            if (board[i][j] == board[i + 1][j]) return true;
+        }
+    }
+    return false; // No moves or merges possible
+}
+
+int calculateScore() {
+    int score = 0;
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            score += board[i][j];
+        }
+    }
+    return score;
+}
+
 int main()
 {
     srand(time(0));
