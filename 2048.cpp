@@ -173,9 +173,16 @@ int main()
     srand(time(0));
     initBoard();
     addRandomTile();
-   //printBoard();
     while (true) {
         printBoard();
+        if (checkWin()) {
+            cout << "You win!" << endl;
+            break;
+        }
+        if(!canMove()) {
+            cout << "Game Over!" << endl;
+            break;
+        }
         char command;
         cin >> command;
 
@@ -187,22 +194,25 @@ int main()
         }
 
         if (command == 'q' || command == 'Q') break;
-        if (command == 'n' || command == 'N') {
+        else if (command == 'n' || command == 'N') {
             initBoard();
             addRandomTile();
             continue;
         }
-        if (command == 'a' || command == 'A') {
+        else if (command == 'a' || command == 'A') {
             moveLeft();
         }
-        if (command == 'd' || command == 'D') {
+        else if (command == 'd' || command == 'D') {
             moveRight();
         }
-        if (command == 'w' || command == 'W') {
+        else if (command == 'w' || command == 'W') {
             moveUp();
         }
-        if (command == 's' || command == 'S') {
+        else if (command == 's' || command == 'S') {
             moveDown();
+        }
+        else {
+            continue;
         }
 
         bool validMovement = false;
@@ -213,9 +223,14 @@ int main()
                     break;
                 }
             }
+            if (validMovement) {
+                break;
+            }
         }
         if (validMovement) addRandomTile();
     }
+
+    cout << "Final Score: " << calculateScore() << endl;
 
     return 0;
 }
