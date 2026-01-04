@@ -6,6 +6,16 @@ using namespace std;
 
 const int SIZE = 4;
 int board[SIZE][SIZE];
+int prevBoard[SIZE][SIZE];
+bool canUndo = false;
+
+void copyBoard(int src[SIZE][SIZE], int dest[SIZE][SIZE]) {
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            dest[i][j] = src[i][j];
+        }
+    }
+}
 
 void initBoard() {
     for (int i = 0; i < SIZE; i++){
@@ -168,6 +178,16 @@ int calculateScore() {
     return score;
 }
 
+void undo() {
+    if (!canUndo) {
+        cout << "Undo is not possible!" << endl;
+        return;
+    }
+
+    copyBoard(prevBoard, board);
+    canUndo = false; // only one chance to undo
+}
+
 int main()
 {
     srand(time(0));
@@ -197,9 +217,19 @@ int main()
         else if (command == 'n' || command == 'N') {
             initBoard();
             addRandomTile();
+            canUndo = false;
             continue;
         }
-        else if (command == 'a' || command == 'A') {
+       else if (command == 'u' || command == 'U') {
+            undo();
+            continue;
+        }
+        copyBoard(board, prevBoard);
+
+        int tempBoard[SIZE][SIZE]; //to check valid movement
+        copyBoard(board, tempBoard);
+
+        if (command == 'a' || command == 'A') {
             moveLeft();
         }
         else if (command == 'd' || command == 'D') {
@@ -227,7 +257,10 @@ int main()
                 break;
             }
         }
-        if (validMovement) addRandomTile();
+        if (validMovement) {
+            canUndo = true;
+            addRandomTile();
+        }
     }
 
     cout << "Final Score: " << calculateScore() << endl;
