@@ -1,15 +1,20 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
+#include <vector>
+#include <utility>
+#include <sstream>
 
 using namespace std;
 
-const int SIZE = 4;
-int board[SIZE][SIZE];
-int prevBoard[SIZE][SIZE];
+int SIZE;
+int board[5][5];
+int prevBoard[5][5];
 bool canUndo = false;
+int bestScore = 0;
 
-void copyBoard(int src[SIZE][SIZE], int dest[SIZE][SIZE]) {
+void copyBoard(int src[5][5], int dest[5][5]) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
             dest[i][j] = src[i][j];
@@ -188,21 +193,84 @@ void undo() {
     canUndo = false; // only one chance to undo
 }
 
+void loadBestScore(int SIZE) {
+    ifstream file("bestscore.txt");
+    if(!file) { bestScore=0; return; }
+
+    string line;
+    bestScore =0;
+    while(getline(file,line)) {
+        istringstream iss(line);
+        int s, score;
+        if(!(iss >> s >> score)) continue;
+        if(s==SIZE) { bestScore = score; break; }
+    }
+    file.close();
+}
+
+void saveBestScore(int SIZE, int currentScore) {
+    ifstream file("bestscore.txt");
+    vector<pair<int,int>> scores;
+    bool updated = false;
+
+    if(file) {
+        int s, score;
+        while(file >> s >> score) {
+            if(s==SIZE) {
+                if(currentScore>score) score=currentScore;
+                updated = true;
+            }
+            scores.push_back({s,score});
+        }
+    }
+    file.close();
+
+    if(!updated) scores.push_back({SIZE,currentScore});
+
+    ofstream outfile("bestscore.txt");
+    for(auto &p:scores) outfile << p.first << " " << p.second << "\n";
+    outfile.close();
+}
+
 int main()
 {
+    do {
+        cout << "Choose board size (4 or 5): ";
+        cin >> SIZE;
+
+        if (SIZE != 4 && SIZE != 5) {
+            cout << "Invalid input! Please enter 4 or 5.\n";
+        }
+
+    } while (SIZE != 4 && SIZE != 5);
+
+    loadBestScore(SIZE);
+
     srand(time(0));
     initBoard();
     addRandomTile();
+    
     while (true) {
         printBoard();
+        cout << "Best Score:" << bestScore << endl;
+
         if (checkWin()) {
             cout << "You win!" << endl;
+            if (calculateScore() > bestScore) {
+                bestScore = calculateScore();
+                saveBestScore(SIZE, bestScore);
+            }
             break;
         }
-        if(!canMove()) {
+        if (!canMove()) {
             cout << "Game Over!" << endl;
+             if (calculateScore() > bestScore) {
+                bestScore = calculateScore();
+                saveBestScore(SIZE, bestScore);
+            }
             break;
         }
+
         char command;
         cin >> command;
 
@@ -220,14 +288,11 @@ int main()
             canUndo = false;
             continue;
         }
-       else if (command == 'u' || command == 'U') {
+        else if (command == 'u' || command == 'U') {
             undo();
             continue;
         }
         copyBoard(board, prevBoard);
-
-        int tempBoard[SIZE][SIZE]; //to check valid movement
-        copyBoard(board, tempBoard);
 
         if (command == 'a' || command == 'A') {
             moveLeft();
@@ -261,9 +326,15 @@ int main()
             canUndo = true;
             addRandomTile();
         }
+        int currentScore = calculateScore();
+        if (currentScore > bestScore) {
+            bestScore = currentScore;
+            saveBestScore(SIZE, bestScore);
+        }
     }
 
     cout << "Final Score: " << calculateScore() << endl;
+    cout << "Best Score: " << bestScore << endl;
 
     return 0;
 }
