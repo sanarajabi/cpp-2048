@@ -3,3 +3,5 @@
 *.out
 build/
 .vscode/
+output/
+output/bestscore.txt
