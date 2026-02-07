@@ -232,6 +232,33 @@ void saveBestScore(int SIZE, int currentScore) {
     outfile.close();
 }
 
+void saveGame() { 
+    ofstream gameFile("savegame.txt"); 
+    for(int i = 0; i < SIZE; i++) { 
+        for(int j = 0; j < SIZE; j++) { 
+            gameFile << board[i][j] << "\t"; 
+        } 
+        gameFile << "\n"; 
+    } 
+    gameFile.close(); 
+    cout << "Game saved!"; 
+} 
+ 
+void loadGame() { 
+    ifstream gameFile("savegame.txt"); 
+    if(!gameFile) { 
+        cout << "No saved game!\n"; 
+        return; 
+    } 
+    for(int i = 0; i < SIZE; i++) { 
+        for(int j = 0; j < SIZE; j++) { 
+            gameFile >> board[i][j]; 
+        } 
+    } 
+    gameFile.close(); 
+    cout << "Game loaded!\n"; 
+}
+
 int main()
 {
     do {
