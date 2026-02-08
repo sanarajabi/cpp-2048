@@ -5,6 +5,7 @@
 #include <vector>
 #include <utility>
 #include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -34,6 +35,16 @@ void initBoard() {
             board[i][j] = 0;
         }
     }
+}
+
+int calculateScore() {
+    int score = 0;
+    for (int i = 0; i < SIZE; i++) {
+        for (int j = 0; j < SIZE; j++) {
+            score += board[i][j];
+        }
+    }
+    return score;
 }
 
 void printBoard() {
@@ -179,16 +190,6 @@ bool canMove() {
     return false; // No moves or merges possible
 }
 
-int calculateScore() {
-    int score = 0;
-    for (int i = 0; i < SIZE; i++) {
-        for (int j = 0; j < SIZE; j++) {
-            score += board[i][j];
-        }
-    }
-    return score;
-}
-
 void undo() {
     if (!canUndo) {
         cout << "Undo is not possible!" << endl;
@@ -282,9 +283,6 @@ void playGame(bool isNew) {
     while (true) {
         printHeader();
         printBoard();
-        
-        cout << " SCORE: " << calculateScore() << "    BEST: " << bestScore << endl;
-        cout << " (W)Up (S)Down (A)Left (D)Right | (U)Undo (Q)Quit: ";
 
         if (!canMove()) {
             cout << "\n!!! GAME OVER !!!" << endl;
@@ -347,122 +345,8 @@ void playGame(bool isNew) {
 
 int main()
 {
-    /* do {
-        cout << "Choose board size (4 or 5): ";
-        cin >> SIZE;
 
-        if (SIZE != 4 && SIZE != 5) {
-            cout << "Invalid input! Please enter 4 or 5.\n";
-        }
-
-    } while (SIZE != 4 && SIZE != 5);
-
-    loadBestScore(SIZE);
-
-    srand(time(0));
-    initBoard();
-    addRandomTile();
-    
-    while (true) {
-        printBoard();
-        cout << "Best Score:" << bestScore << endl;
-
-        if (checkWin()) {
-            cout << "You win!" << endl;
-            if (calculateScore() > bestScore) {
-                bestScore = calculateScore();
-                saveBestScore(SIZE, bestScore);
-            }
-            break;
-        }
-        if (!canMove()) {
-            cout << "Game Over!" << endl;
-             if (calculateScore() > bestScore) {
-                bestScore = calculateScore();
-                saveBestScore(SIZE, bestScore);
-            }
-            break;
-        }
-
-        char command;
-        cin >> command;
-
-        int oldBoard[SIZE][SIZE]; //to check if the command is valid
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                oldBoard[i][j] = board[i][j];
-            }
-        }
-
-        if (command == 'q' || command == 'Q') {
-            cout << "Do you want to save the game?(y/n)\n";
-            char saveornot;
-            do {
-                cin >> saveornot;
-                if(saveornot == 'y') {
-                    saveGame();
-                }
-                else {
-                    break;
-                }
-            } while(saveornot != 'y' && saveornot != 'n');
-            if(saveornot == 'n') break;
-        }
-        else if (command == 'n' || command == 'N') {
-            initBoard();
-            addRandomTile();
-            canUndo = false;
-            continue;
-        }
-        else if (command == 'u' || command == 'U') {
-            undo();
-            continue;
-        }
-        copyBoard(board, prevBoard);
-
-        if (command == 'a' || command == 'A') {
-            moveLeft();
-        }
-        else if (command == 'd' || command == 'D') {
-            moveRight();
-        }
-        else if (command == 'w' || command == 'W') {
-            moveUp();
-        }
-        else if (command == 's' || command == 'S') {
-            moveDown();
-        }
-        else {
-            continue;
-        }
-
-        bool validMovement = false;
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                if (oldBoard[i][j] != board[i][j]) {
-                    validMovement = true;
-                    break;
-                }
-            }
-            if (validMovement) {
-                break;
-            }
-        }
-        if (validMovement) {
-            canUndo = true;
-            addRandomTile();
-        }
-        int currentScore = calculateScore();
-        if (currentScore > bestScore) {
-            bestScore = currentScore;
-            saveBestScore(SIZE, bestScore);
-        }
-    }
-
-    cout << "Final Score: " << calculateScore() << endl;
-    cout << "Best Score: " << bestScore << endl;
-
-    return 0;*/
+    system("chcp 65001 > nul");
     srand(time(0));
     
     while (true) {
