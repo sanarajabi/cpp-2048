@@ -59,64 +59,76 @@ int calculateScore() {
     return score;
 }
 
-void printBoard() {     cout << " .--------------------------." << endl; 
-    cout << " | SCORE: " << left << setw(17) << calculateScore() << " |" << endl; 
-    cout << " | BEST:  " << left << setw(17) << bestScore << " |" << endl; 
-    cout << " '--------------------------'" << endl << endl; 
- 
-    const char* HORIZ = "──────"; 
-     
-    cout << "┌"; 
-    for (int j = 0; j < SIZE; j++) { 
-        cout << HORIZ; 
-        if (j < SIZE - 1) cout << "┬"; 
-    } 
-    cout << "┐" << endl; 
-     
-    for (int i = 0; i < SIZE; i++) { 
-        cout << "│"; 
-         
-   for (int j = 0; j < SIZE; j++) {     if (board[i][j] == 0) { 
-        cout << setw(6) << " " << "│"; 
-    }  
-    else { 
-        if (board[i][j] == 2) cout << "\033[1;33m";        // زرد روشن  
-        else if (board[i][j] == 4) cout << "\033[1;32m";   // سبز  
-        else if (board[i][j] == 8) cout << "\033[1;36m";   // فیروزه‌ای  
-        else if (board[i][j] == 16) cout << "\033[1;34m";  // آبی  
-        else if (board[i][j] == 32) cout << "\033[1;35m";  // بنفش  
-        else if (board[i][j] == 64) cout << "\033[1;31m";  // قرمز  
-        else if (board[i][j] == 128) cout << "\033[1;33m"; // زرد تیره  
-        else if (board[i][j] == 256) cout << "\033[1;32m"; // سبز تیره  
-        else if (board[i][j] == 512) cout << "\033[1;36m"; // فیروزه‌ای تیره  
-        else if (board[i][j] == 1024) cout << "\033[1;35m";// بنفش تیره  
-        else if (board[i][j] == 2048) cout << "\033[1;31m";// قرمز روشن  
-        else cout << "\033[1;37m";                         // سفید برای اعداد بالاتر  
-        
-        cout << setw(6) << board[i][j]; 
-        cout << "\033[0m" << "│"; 
-    } 
+void printCentered(int num, int width = 6) {    string numStr = to_string(num);
+    int numLen = numStr.length();
+    int leftSpaces = (width - numLen) / 2;
+    int rightSpaces = width - numLen - leftSpaces;
+    
+    for(int i = 0; i < leftSpaces; i++) cout << " ";
+    cout << numStr;
+    for(int i = 0; i < rightSpaces; i++) cout << " ";
 }
-        cout << endl; 
-         
-        if (i < SIZE - 1) { 
-            cout << "├"; 
-            for (int j = 0; j < SIZE; j++) { 
-                cout << HORIZ; 
-                if (j < SIZE - 1) cout << "┼"; 
-            } 
-            cout << "┤" << endl; 
-        } 
-    } 
-     
-    cout << "└"; 
-    for (int j = 0; j < SIZE; j++) { 
-        cout << HORIZ; 
-        if (j < SIZE - 1) cout << "┴"; 
-    } 
-    cout << "┘" << endl; 
- 
-    cout << "\n (W)Up (S)Down (A)Left (D)Right | (U)Undo | (Q)Quit: " << endl; 
+
+void printBoard() {
+    cout << " .--------------------------." << endl;
+    cout << " | SCORE: " << left << setw(17) << calculateScore() << " |" << endl;
+    cout << " | BEST:  " << left << setw(17) << bestScore << " |" << endl;
+    cout << " '--------------------------'" << endl << endl;
+
+    const char* HORIZ = "──────";
+    
+    cout << "┌";
+    for (int j = 0; j < SIZE; j++) {
+        cout << HORIZ;
+        if (j < SIZE - 1) cout << "┬";
+    }
+    cout << "┐" << endl;
+    
+    for (int i = 0; i < SIZE; i++) {
+        cout << "│";
+        
+        for (int j = 0; j < SIZE; j++) {
+            if (board[i][j] == 0) {
+                cout << "      │";
+            } else {
+                if (board[i][j] == 2) cout << "\033[1;33m";
+                else if (board[i][j] == 4) cout << "\033[1;32m";
+                else if (board[i][j] == 8) cout << "\033[1;36m";
+                else if (board[i][j] == 16) cout << "\033[1;34m";
+                else if (board[i][j] == 32) cout << "\033[1;35m";
+                else if (board[i][j] == 64) cout << "\033[1;31m";
+                else if (board[i][j] == 128) cout << "\033[1;33m";
+                else if (board[i][j] == 256) cout << "\033[1;32m";
+                else if (board[i][j] == 512) cout << "\033[1;36m";
+                else if (board[i][j] == 1024) cout << "\033[1;35m";
+                else if (board[i][j] == 2048) cout << "\033[1;31m";
+                else cout << "\033[1;37m";
+                
+                printCentered(board[i][j], 6);
+                
+                cout << "\033[0m" << "│";
+            }
+        }
+        cout << endl;
+        
+        if (i < SIZE - 1) {
+            cout << "├";
+            for (int j = 0; j < SIZE; j++) {
+                cout << HORIZ;
+                if (j < SIZE - 1) cout << "┼";
+            }
+            cout << "┤" << endl;
+        }
+    }
+    
+    cout << "└";
+    for (int j = 0; j < SIZE; j++) {
+        cout << HORIZ;
+        if (j < SIZE - 1) cout << "┴";
+    }
+    cout << "┘" << endl;
+    
+    cout << "\n (W)Up (S)Down (A)Left (D)Right | (U)Undo | (Q)Quit: " << endl;
 }
 
 void addRandomTile() {
