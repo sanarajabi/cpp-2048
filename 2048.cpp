@@ -47,18 +47,57 @@ int calculateScore() {
     return score;
 }
 
-void printBoard() {
-
-    for (int i = 0; i < SIZE; i++){
-        for (int j = 0; j < SIZE; j++){
-            if (board[i][j] == 0)
-            cout << ".\t";
-            else
-            cout << board[i][j] << "\t";
-        }
-        cout << endl;
-    }
-    //downside if it is needed
+void printBoard() {     cout << " .--------------------------." << endl; 
+    cout << " | SCORE: " << left << setw(17) << calculateScore() << " |" << endl; 
+    cout << " | BEST:  " << left << setw(17) << bestScore << " |" << endl; 
+    cout << " '--------------------------'" << endl << endl; 
+ 
+    const char* HORIZ = "──────"; 
+     
+    cout << "┌"; 
+    for (int j = 0; j < SIZE; j++) { 
+        cout << HORIZ; 
+        if (j < SIZE - 1) cout << "┬"; 
+    } 
+    cout << "┐" << endl; 
+     
+    for (int i = 0; i < SIZE; i++) { 
+        cout << "│"; 
+         
+        for (int j = 0; j < SIZE; j++) { 
+            if (board[i][j] == 0) { 
+                cout << setw(6) << " " << "│"; 
+            }  
+            else { 
+                if (board[i][j] == 2) cout << "\033[1;33m";      // زرد روشن 
+                else if (board[i][j] == 4) cout << "\033[1;32m"; // سبز 
+                else if (board[i][j] == 8) cout << "\033[1;36m"; // فیروزه‌ای 
+                else if (board[i][j] >= 16) cout << "\033[1;31m";// قرمز برای اعداد بزرگ 
+                 
+                cout << setw(6) << board[i][j]; 
+                cout << "\033[0m" << "│"; 
+            } 
+        } 
+        cout << endl; 
+         
+        if (i < SIZE - 1) { 
+            cout << "├"; 
+            for (int j = 0; j < SIZE; j++) { 
+                cout << HORIZ; 
+                if (j < SIZE - 1) cout << "┼"; 
+            } 
+            cout << "┤" << endl; 
+        } 
+    } 
+     
+    cout << "└"; 
+    for (int j = 0; j < SIZE; j++) { 
+        cout << HORIZ; 
+        if (j < SIZE - 1) cout << "┴"; 
+    } 
+    cout << "┘" << endl; 
+ 
+    cout << "\n (W)Up (S)Down (A)Left (D)Right | (U)Undo | (Q)Quit: " << endl; 
 }
 
 void addRandomTile() {
