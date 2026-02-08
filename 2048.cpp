@@ -14,6 +14,12 @@ int prevBoard[5][5];
 bool canUndo = false;
 int bestScore = 0;
 
+void printHeader() {
+    system("cls");
+    cout << "============================================" << endl;
+    cout << "             GAME 2048 - C++                " << endl;
+    cout << "============================================" << endl;
+}
 void copyBoard(int src[5][5], int dest[5][5]) {
     for (int i = 0; i < SIZE; i++) {
         for (int j = 0; j < SIZE; j++) {
@@ -31,7 +37,7 @@ void initBoard() {
 }
 
 void printBoard() {
-    //print upside the board if it is needed
+
     for (int i = 0; i < SIZE; i++){
         for (int j = 0; j < SIZE; j++){
             if (board[i][j] == 0)
@@ -233,7 +239,9 @@ void saveBestScore(int SIZE, int currentScore) {
 }
 
 void saveGame() { 
-    ofstream gameFile("savegame.txt"); 
+    ofstream gameFile("savegame.txt");
+    gameFile << SIZE << "\n";
+    gameFile << bestScore << "\n";
     for(int i = 0; i < SIZE; i++) { 
         for(int j = 0; j < SIZE; j++) { 
             gameFile << board[i][j] << "\t"; 
@@ -245,11 +253,13 @@ void saveGame() {
 } 
  
 void loadGame() { 
-    ifstream gameFile("savegame.txt"); 
+    ifstream gameFile("savegame.txt");
     if(!gameFile) { 
         cout << "No saved game!\n"; 
         return; 
     } 
+    gameFile >> SIZE;
+    gameFile >> bestScore;
     for(int i = 0; i < SIZE; i++) { 
         for(int j = 0; j < SIZE; j++) { 
             gameFile >> board[i][j]; 
@@ -259,9 +269,85 @@ void loadGame() {
     cout << "Game loaded!\n"; 
 }
 
+void playGame(bool isNew) {
+    if (isNew) {
+        initBoard();
+        addRandomTile();
+        addRandomTile();
+    }
+    else {
+        loadGame();
+    }
+
+    while (true) {
+        printHeader();
+        printBoard();
+        
+        cout << " SCORE: " << calculateScore() << "    BEST: " << bestScore << endl;
+        cout << " (W)Up (S)Down (A)Left (D)Right | (U)Undo (Q)Quit: ";
+
+        if (!canMove()) {
+            cout << "\n!!! GAME OVER !!!" << endl;
+            if (calculateScore() > bestScore) {
+                bestScore = calculateScore();
+                saveBestScore(SIZE, bestScore);
+            }
+            cout << "Press any key to return to menu...";
+            char wait; cin >> wait;
+            return; 
+        }
+
+        char command;
+        cin >> command;
+
+        if (command == 'q' || command == 'Q') {
+            cout << "Save game before returning to menu? (y/n): ";
+            char saveChoice; cin >> saveChoice;
+            if (saveChoice == 'y') saveGame();
+            return; 
+        }
+
+        if (command == 'u' || command == 'U') {
+            undo();
+            continue;
+        }
+
+        copyBoard(board, prevBoard);
+        canUndo = true;
+
+        int tempBoard[5][5];
+        copyBoard(board, tempBoard);
+
+        if (command == 'a' || command == 'A') moveLeft();
+        else if (command == 'd' || command == 'D') moveRight();
+        else if (command == 'w' || command == 'W') moveUp();
+        else if (command == 's' || command == 'S') moveDown();
+        else continue;
+
+        bool changed = false;
+        for (int i = 0; i < SIZE; i++) {
+            for (int j = 0; j < SIZE; j++) {
+                if (tempBoard[i][j] != board[i][j]) {
+                    changed = true;
+                    break;
+                }
+            }
+        }
+
+        if (changed) {
+            addRandomTile();
+            int currentScore = calculateScore();
+            if (currentScore > bestScore) {
+                bestScore = currentScore;
+                saveBestScore(SIZE, bestScore);
+            }
+        }
+    }
+}
+
 int main()
 {
-    do {
+    /* do {
         cout << "Choose board size (4 or 5): ";
         cin >> SIZE;
 
@@ -308,7 +394,20 @@ int main()
             }
         }
 
-        if (command == 'q' || command == 'Q') break;
+        if (command == 'q' || command == 'Q') {
+            cout << "Do you want to save the game?(y/n)\n";
+            char saveornot;
+            do {
+                cin >> saveornot;
+                if(saveornot == 'y') {
+                    saveGame();
+                }
+                else {
+                    break;
+                }
+            } while(saveornot != 'y' && saveornot != 'n');
+            if(saveornot == 'n') break;
+        }
         else if (command == 'n' || command == 'N') {
             initBoard();
             addRandomTile();
@@ -363,5 +462,40 @@ int main()
     cout << "Final Score: " << calculateScore() << endl;
     cout << "Best Score: " << bestScore << endl;
 
+    return 0;*/
+    srand(time(0));
+    
+    while (true) {
+        
+        printHeader(); 
+        cout << "\n  1. New Game" << endl;
+        cout << "  2. Continue Previous Game" << endl;
+        cout << "  3. Exit" << endl;
+        cout << "\n  Choice: ";
+
+        int choice;
+        cin >> choice;
+
+        if (choice == 1) { 
+            printHeader(); 
+            do {
+                cout << "\n  Choose board size (4 or 5): ";
+                cin >> SIZE;
+
+                if (SIZE != 4 && SIZE != 5) {
+                    cout << "  Invalid input! Please enter 4 or 5.\n";
+                }
+            } while (SIZE != 4 && SIZE != 5);
+
+            loadBestScore(SIZE); 
+            playGame(true);
+        } 
+        else if (choice == 2) {
+            playGame(false);
+        } 
+        else if (choice == 3) {
+            break; 
+        }
+    }
     return 0;
 }
